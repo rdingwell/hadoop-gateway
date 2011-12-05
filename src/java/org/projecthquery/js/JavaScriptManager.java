@@ -18,18 +18,22 @@ public class JavaScriptManager {
             Map<String, Object> contextObjects) {
         context = Context.enter();
         scope = context.initStandardObjects();
-        for (Iterator iterator = scripts.iterator(); iterator.hasNext();) {
-            JavaScriptSource js = (JavaScriptSource) iterator
-                    .next();
-            System.out.println(js.toString());
-            if(js.getSource() != null){
-             context.evaluateString(scope, js.getSource() , js.getFileName(), 1  , null);
-            }
-        }
+        addJavascriptSources(scripts);
         setContextObjects(contextObjects);
 
     }
+    
+    public JavaScriptManager(List<JavaScriptSource> scripts) {
+        context = Context.enter();
+        scope = context.initStandardObjects();
+        addJavascriptSources(scripts);
+    }
+    
 
+    public Object evaluate(String javaScript) {
+        return context.evaluateString(scope, javaScript, "temporary", 1, null);
+    }
+    
     public Object evaluate(String javaScript, Map<String, Object> contextObjects) {
         setContextObjects(contextObjects);
         return context.evaluateString(scope, javaScript, "temporary", 1, null);
@@ -51,12 +55,21 @@ public class JavaScriptManager {
         return scope.get(name, scope);
     }
 
+    public void addJavascriptSources(List<JavaScriptSource> scripts){
+        for (Iterator iterator = scripts.iterator(); iterator.hasNext();) {
+            JavaScriptSource js = (JavaScriptSource) iterator
+                    .next();
+            if(js.getSource() != null){
+             context.evaluateString(scope, js.getSource() , js.getFileName(), 1  , null);
+            }
+        }
+    }
     private void setContextObjects(Map<String, Object> contextObjects) {
         if (contextObjects != null) {
             for (Iterator iterator = contextObjects.keySet().iterator(); iterator
                     .hasNext();) {
                 String key = (String) iterator.next();
-                scope.put(key, scope, contextObjects.get(key));
+                injectObject(key, contextObjects.get(key));
             }
         }
     }
