@@ -25,7 +25,7 @@ public class TypeConverter {
         if(jsObject == null){
             return  NullWritable.get();
         }
-        System.out.println("CONVERT :" + jsObject.getClass().getName() + "  "+jsObject.toString());
+        
         if (jsObject.getClass().equals(Double.class)) {
             convertedJSType = new DoubleWritable((Double) jsObject);
         }

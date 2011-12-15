@@ -17,6 +17,7 @@ public class JavaScriptManager {
     public JavaScriptManager(List<JavaScriptSource> scripts,
             Map<String, Object> contextObjects) {
         context = Context.enter();
+        context.getWrapFactory().setJavaPrimitiveWrap(false);
         scope = context.initStandardObjects();
         addJavascriptSources(scripts);
         setContextObjects(contextObjects);
@@ -25,7 +26,9 @@ public class JavaScriptManager {
     
     public JavaScriptManager(List<JavaScriptSource> scripts) {
         context = Context.enter();
+        context.getWrapFactory().setJavaPrimitiveWrap(false);
         scope = context.initStandardObjects();
+        
         addJavascriptSources(scripts);
     }
     

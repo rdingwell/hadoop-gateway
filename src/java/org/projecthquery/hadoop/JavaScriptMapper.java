@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapred.JobConf;
-
 import org.apache.hadoop.mapred.Mapper;
 import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapred.Reporter;
@@ -35,5 +34,9 @@ public class JavaScriptMapper extends JavaScriptMRBase implements Mapper<Writabl
         List<JavaScriptSource> js = setUpSource(job);
         jsm = new JavaScriptManager(js,null);
         jsm.injectObject("$mapper", this);
+
+
     }
+    
+
 }

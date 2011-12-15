@@ -1,11 +1,9 @@
 package org.projecthquery.hadoop;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapred.JobConf;
@@ -15,7 +13,7 @@ import org.apache.hadoop.mapred.Reporter;
 import org.projecthquery.js.JavaScriptManager;
 import org.projecthquery.js.JavaScriptSource;
 
-public class JavaScriptReducer extends JavaScriptMRBase implements Reducer<Writable, Writable,Writable, Writable>{
+public class JavaScriptReducer extends JavaScriptMRBase implements Reducer<JSONWritableComaprable, JSONWritableComaprable,Writable, Writable>{
     private JavaScriptManager jsm;
 
     @Override
@@ -26,18 +24,35 @@ public class JavaScriptReducer extends JavaScriptMRBase implements Reducer<Writa
     }
 
     @Override
-    public void reduce(Writable key, Iterator<Writable> values,
+    public void reduce(JSONWritableComaprable key, Iterator<JSONWritableComaprable> values,
             OutputCollector<Writable, Writable> oc, Reporter reporter)
             throws IOException {
         // TODO: Currently only works with Text/Double pairs
-        ArrayList<Double> castValues = new ArrayList<Double>();
-        while (values.hasNext()) {
-            DoubleWritable doubleWritable = (DoubleWritable) values.next();
-            castValues.add(doubleWritable.get());
+
+        jsm.injectObject("key", key.getValue());
+        jsm.injectObject("values", new WrappedIterator(values));
+        Object o = jsm.evaluate("reduce(key, values);", null);
+        oc.collect(new Text(key.toString()), new Text(new JSONWritableComaprable(o).toString()));
+    }
+    
+    private class WrappedIterator implements Iterator{
+        Iterator<JSONWritableComaprable> wrapped;
+        
+        public boolean hasNext() {
+            return wrapped.hasNext();
         }
-        jsm.injectObject("$output_collector", oc);
-        jsm.injectObject("key", ((Text) key).toString());
-        jsm.injectObject("values", castValues);
-        jsm.evaluate("reduce(key, values);", null);
+
+        public Object next() {
+            JSONWritableComaprable jwc = wrapped.next();
+            return jwc.getValue();
+          }
+
+        public void remove() {
+            wrapped.remove();
+        }
+
+        public WrappedIterator(Iterator<JSONWritableComaprable> iter){
+            this.wrapped=iter;
+        }
     }
 }
