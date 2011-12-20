@@ -8,7 +8,7 @@ Gem::Specification::new do |spec|
   spec.summary = "hadoop-query-executor"
   spec.description = "description: it's java"
 
-  spec.files = Dir['{lib,ext}/**/*'] + Dir['{*.gemspec,Rakefile}']
+  spec.files = Dir['{lib,src}/**/*'] + Dir['{*.gemspec,Rakefile}']
 
   spec.executables = []
   
