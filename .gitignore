@@ -1,5 +1,6 @@
 .classpath
 .project
+*.gem
 bin
 classes
 test-classes
