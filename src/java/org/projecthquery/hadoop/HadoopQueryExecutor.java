@@ -1,9 +1,8 @@
 package org.projecthquery.hadoop;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.filecache.DistributedCache;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.DoubleWritable;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.FileInputFormat;
 import org.apache.hadoop.mapred.FileOutputFormat;
 import org.apache.hadoop.mapred.JobClient;
@@ -15,6 +14,7 @@ public class HadoopQueryExecutor implements Tool {
 
     private Configuration configuration;
     private String map, reduce,filter,functions,queryId;
+    private String[] jars;
     public HadoopQueryExecutor() {
     }
     
@@ -35,6 +35,9 @@ public class HadoopQueryExecutor implements Tool {
         this.queryId=args[4];
     }
     
+    public void setJars(String[] jars){
+        this.jars = jars;
+    }
     public Object execute() throws Exception{
        run(new String[]{map,reduce,filter,functions,queryId});
        return null;
@@ -76,9 +79,14 @@ public class HadoopQueryExecutor implements Tool {
         jobConf.setOutputKeyClass(JSONWritableComaprable.class);
         jobConf.setOutputValueClass(JSONWritableComaprable.class);
         
-        FileInputFormat.addInputPath(jobConf, new Path("in"));
+        FileInputFormat.addInputPath(jobConf, new Path("patients"));
         FileOutputFormat.setOutputPath(jobConf, new Path("out"));
         
+        if(this.jars != null){
+          for (int i = 0; i < this.jars.length; i++) {
+            DistributedCache.addArchiveToClassPath(new Path(this.jars[i]), jobConf);
+          }
+        }
         JobClient.runJob(jobConf);
         return 0;
     }

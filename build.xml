@@ -13,7 +13,7 @@
     <property name="ivy.home" value="${user.home}/.ant" />
     <property name="ivy.jar.dir" value="${ivy.home}/lib" />
     <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
-
+    <property name="ivy.deps.dir" value="ivy_lib"/>
     <target name="download-ivy" unless="offline">
 
         <mkdir dir="${ivy.jar.dir}"/>
@@ -40,14 +40,14 @@
     </target>
 
     <target name="clean-deps">
-        <delete dir="lib"/>
+        <delete dir="ivy_lib"/>
     </target>
 
     <target name="compile" depends="init-ivy,get-deps">
         <mkdir dir="classes"/>
         <javac srcdir="src/java" destdir="classes" debug="true">
             <classpath>
-                <fileset dir="lib">
+                <fileset dir="${ivy.deps.dir}">
                     <include name="**/*.jar"/>
                 </fileset>
             </classpath>
@@ -59,7 +59,7 @@
         <javac srcdir="test/java" destdir="test-classes" debug="true">
             <classpath>
                 <pathelement location="classes"/>
-                <fileset dir="lib">
+                <fileset dir="${ivy.deps.dir}">
                     <include name="**/*.jar"/>
                 </fileset>
             </classpath>
@@ -71,7 +71,7 @@
             <classpath>
                 <pathelement location="classes"/>
                 <pathelement location="test-classes"/>
-                <fileset dir="lib">
+                <fileset dir="${ivy.deps.dir}">
                     <include name="**/*.jar"/>
                 </fileset>
             </classpath>
@@ -84,13 +84,21 @@
     </target>
 
     <target name="get-deps" depends="init-ivy" description="retrieve dependencies with ivy">
+        <mkdir dir="${ivy.deps.dir}"/>
         <ivy:configure file="ivysettings.xml" />
-        <ivy:retrieve />
+        <ivy:retrieve pattern="ivy_lib/[artifact]-[revision].[ext]" type="jar"/>
     </target>
     
     <target name="jar" depends="compile">
         <mkdir dir="dist"/>
         <jar destfile="dist/hadoop-gateway.jar"
              basedir="classes"/>
+    </target>
+    
+    <target name="dist" depends="jar">
+        <mkdir dir="lib"/>
+        <copy file="ivy_lib/rhino-1.7R3.jar" todir="lib" overwrite="true"/>
+        <copy file="ivy_lib/guava-10.0.jar" todir="lib" overwrite="true"/>
+        <copy file="dist/hadoop-gateway.jar" todir="lib" overwrite="true"/>
     </target>
 </project>

@@ -1,7 +1,8 @@
-*.jar
 .classpath
 .project
 bin
 classes
 test-classes
 build
+dist
+ivy_lib
