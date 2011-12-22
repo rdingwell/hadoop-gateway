@@ -11,7 +11,7 @@ class HadoopQueryExecutor
     
     def initialize(map,reduce,functions,query_id,filter)
         @executor = org.projecthquery.hadoop.HadoopQueryExecutor.new(map, reduce, functions, filter, query_id)
-        @executor.setJar(File.join(File.dirname(__FILE__),'lib','jars','hadoop-gateway.jar'))
+        @executor.setJar(File.join(File.dirname(__FILE__),'jars','hadoop-gateway.jar'))
     end
    
     

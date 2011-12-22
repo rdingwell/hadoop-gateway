@@ -97,14 +97,14 @@
     </target>
     
     <target name="dist" depends="jar">
-        <delete dir="lib"/>
-        <mkdir dir="lib"/>
+        <delete dir="lib/jars"/>
+        <mkdir dir="lib/jars"/>
         <zip destfile="lib/hadoop-gateway.jar">
            <zipgroupfileset dir="ivy_lib" includes="rhino-1.7R3.jar,guava-10.0.jar,jackson-*.jar"/>
            <zipgroupfileset dir="dist" includes="hadoop-gateway.jar"/>
         </zip>
        
-        <copy todir="lib">
+        <copy todir="lib/jars">
         <fileset dir="${ivy.deps.dir}" includes="commons-lang-2.4.jar,core-3.1.1.jar,hadoop-core-0.20.205.0.jar,commons-logging-1.1.1.jar,commons-configuration-1.6.jar"></fileset>
         </copy>
     </target>
