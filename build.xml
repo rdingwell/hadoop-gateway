@@ -93,12 +93,19 @@
         <mkdir dir="dist"/>
         <jar destfile="dist/hadoop-gateway.jar"
              basedir="classes"/>
+
     </target>
     
     <target name="dist" depends="jar">
+        <delete dir="lib"/>
         <mkdir dir="lib"/>
-        <copy file="ivy_lib/rhino-1.7R3.jar" todir="lib" overwrite="true"/>
-        <copy file="ivy_lib/guava-10.0.jar" todir="lib" overwrite="true"/>
-        <copy file="dist/hadoop-gateway.jar" todir="lib" overwrite="true"/>
+        <zip destfile="lib/hadoop-gateway.jar">
+           <zipgroupfileset dir="ivy_lib" includes="rhino-1.7R3.jar,guava-10.0.jar,jackson-*.jar"/>
+           <zipgroupfileset dir="dist" includes="hadoop-gateway.jar"/>
+        </zip>
+       
+        <copy todir="lib">
+        <fileset dir="${ivy.deps.dir}" includes="commons-lang-2.4.jar,core-3.1.1.jar,hadoop-core-0.20.205.0.jar,commons-logging-1.1.1.jar,commons-configuration-1.6.jar"></fileset>
+        </copy>
     </target>
 </project>
