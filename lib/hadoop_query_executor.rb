@@ -1,17 +1,17 @@
-require 'lib/hadoop-gateway.jar'
-require 'lib/hadoop-core-0.20.205.0.jar'
-require 'lib/commons-logging-1.1.1.jar'
-require 'lib/commons-configuration-1.6.jar'
-require 'lib/core-3.1.1.jar'
-require 'lib/commons-lang-2.4.jar'
-#require 'query_utilities'
+require 'jars/hadoop-gateway.jar'
+require 'jars/hadoop-core-0.20.205.0.jar'
+require 'jars/commons-logging-1.1.1.jar'
+require 'jars/commons-configuration-1.6.jar'
+require 'jars/core-3.1.1.jar'
+require 'jars/commons-lang-2.4.jar'
+require 'query_utilities'
 class HadoopQueryExecutor 
 
     @executor = nil
     
     def initialize(map,reduce,functions,query_id,filter)
         @executor = org.projecthquery.hadoop.HadoopQueryExecutor.new(map, reduce, functions, filter, query_id)
-        @executor.setJar(File.join(File.dirname(__FILE__),'lib','hadoop-gateway.jar'))
+        @executor.setJar(File.join(File.dirname(__FILE__),'lib','jars','hadoop-gateway.jar'))
     end
    
     
