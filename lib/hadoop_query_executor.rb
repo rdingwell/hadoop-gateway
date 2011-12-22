@@ -1,9 +1,9 @@
 require 'lib/hadoop-gateway.jar'
-require 'ivy_lib/hadoop-core-0.20.205.0.jar'
-require 'ivy_lib/commons-logging-1.1.1.jar'
-require 'ivy_lib/commons-configuration-1.6.jar'
-require 'ivy_lib/core-3.1.1.jar'
-require 'ivy_lib/commons-lang-2.4.jar'
+require 'lib/hadoop-core-0.20.205.0.jar'
+require 'lib/commons-logging-1.1.1.jar'
+require 'lib/commons-configuration-1.6.jar'
+require 'lib/core-3.1.1.jar'
+require 'lib/commons-lang-2.4.jar'
 #require 'query_utilities'
 class HadoopQueryExecutor 
 
