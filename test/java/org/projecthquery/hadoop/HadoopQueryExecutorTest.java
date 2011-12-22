@@ -12,16 +12,17 @@ public class HadoopQueryExecutorTest {
 
     @Test
     public void testExecute() {
-        String mapJs = "function map(p){emit(p,1)}";
+        String mapJs = "function map(p){emit({\"gender\":p.p.gender},1)}";
         String reduceJs = "function reduce(k,v){var sum = 0; while(v.hasNext()){sum+=v.next();} return sum;}";
         String functionsJs = "var hQuery = {}; hQuery.Patient = function(x){this.p=x;}; var count=1; ";
         String filter= "";
         String queryId= "";
 
-        HadoopQueryExecutor ex = new HadoopQueryExecutor(mapJs, reduceJs, functionsJs, filter, queryId);
-       
+        HadoopQueryExecutor ex = new HadoopQueryExecutor(mapJs, reduceJs, functionsJs, filter, System.currentTimeMillis() +"");
+        ex.setJar("lib/hadoop-gateway.jar");
        try {
        Object results = ex.execute();
+       System.out.println(results);
         
        } catch (Exception e) {
 
