@@ -5,6 +5,7 @@ require 'jars/commons-configuration-1.6.jar'
 require 'jars/core-3.1.1.jar'
 require 'jars/commons-lang-2.4.jar'
 require 'query_utilities'
+require 'json'
 class HadoopQueryExecutor 
 
     @executor = nil
@@ -17,13 +18,21 @@ class HadoopQueryExecutor
     
    def execute
     result= @executor.execute()
-    return result
+    
     results = []
     result.key_set.each do |k|
+     key = parse_if_needed(k)
+     val = parse_if_needed(result[k])
      key = QueryUtilities.stringify_key(k)
      results[key] = result[k]
     end
         return results
     end
 
+
+   private 
+   
+   def parse_if_needed(x)
+     x[0] == '{' ? JSON.parse(x) : x
+   end
 end
