@@ -99,7 +99,7 @@
     <target name="dist" depends="jar">
         <delete dir="lib/jars"/>
         <mkdir dir="lib/jars"/>
-        <zip destfile="lib/hadoop-gateway.jar">
+        <zip destfile="lib/jars/hadoop-gateway.jar">
            <zipgroupfileset dir="ivy_lib" includes="rhino-1.7R3.jar,guava-10.0.jar,jackson-*.jar"/>
            <zipgroupfileset dir="dist" includes="hadoop-gateway.jar"/>
         </zip>
