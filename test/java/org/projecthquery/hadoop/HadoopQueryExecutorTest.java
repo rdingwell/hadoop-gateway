@@ -19,7 +19,7 @@ public class HadoopQueryExecutorTest {
         String queryId= "";
 
         HadoopQueryExecutor ex = new HadoopQueryExecutor(mapJs, reduceJs, functionsJs, filter, System.currentTimeMillis() +"");
-        ex.setJar("lib/hadoop-gateway.jar");
+        ex.setJar("lib/jars/hadoop-gateway.jar");
        try {
        Object results = ex.execute();
        System.out.println(results);

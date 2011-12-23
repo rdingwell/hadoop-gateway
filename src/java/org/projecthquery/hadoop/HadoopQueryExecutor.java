@@ -1,7 +1,9 @@
 package org.projecthquery.hadoop;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
@@ -18,6 +20,8 @@ import org.apache.hadoop.mapred.RunningJob;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.NativeArray;
+import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
 
 public class HadoopQueryExecutor implements Tool {
@@ -128,8 +132,33 @@ public class HadoopQueryExecutor implements Tool {
           Object key = context.evaluateString(scope, "JSON.parse(_str)", "object", 1, null);
           scope.put("_str", scope, bits[1]);
           Object val = context.evaluateString(scope, "JSON.parse(_str)", "object", 1, null);
-          this.results.put(key, val);
+          this.results.put(convertIfNeeded(key), convertIfNeeded(val));
         }
         return 0;
+    }
+    
+    
+    private Object convertIfNeeded(Object obj){
+        Object ret = obj;
+        if(obj instanceof NativeObject){
+            NativeObject so = (NativeObject)obj;
+            Map hm = new HashMap();
+           for (Iterator<Map.Entry<Object,Object>> iterator = so.entrySet().iterator(); iterator.hasNext();) {
+            Map.Entry<Object, Object> e =  iterator.next();
+            hm.put(convertIfNeeded(e.getKey()), convertIfNeeded(e.getValue()));
+           
+           }
+           ret = hm;
+        }
+        else if(obj instanceof NativeArray){
+            List l = new ArrayList();
+            List na = (List)obj;
+            for (Iterator iterator = na.iterator(); iterator.hasNext();) {
+               l.add(convertIfNeeded(iterator.next()));
+            }
+            ret = l;
+        }
+           
+        return ret;
     }
 }
