@@ -24,7 +24,7 @@ class HadoopQueryExecutor
      key = parse_if_needed(k)
      val = parse_if_needed(result[k])
      key = QueryUtilities.stringify_key(k)
-     results[key] = result[k]
+     results[key] = val
     end
         return results
     end
