@@ -125,14 +125,28 @@ public class HadoopQueryExecutor implements Tool {
         FileUtil.copyMerge(fs, outputPath,fs, resultPath , false, jobConf, null);
         FSDataInputStream fin = fs.open(resultPath);
         String ln = null;
+        
+        // this is ugly and stupid but ....  on the ruby side of things rhino objects and Maps will not
+        // encode into mongo for storage. 
         while((ln = fin.readLine()) != null){
             if(ln.trim().equals("")) continue;
           String[] bits =   ln.split("\t");
-          scope.put("_str", scope, bits[0]);
-          Object key = context.evaluateString(scope, "JSON.parse(_str)", "object", 1, null);
-          scope.put("_str", scope, bits[1]);
-          Object val = context.evaluateString(scope, "JSON.parse(_str)", "object", 1, null);
-          this.results.put(convertIfNeeded(key), convertIfNeeded(val));
+          Object key = bits[0];
+          Object val = bits[1];
+          if(!bits[0].startsWith("{")){
+              scope.put("_str", scope, key);
+              key = context.evaluateString(scope, "JSON.parse(_str)", "object", 1, null);
+          }
+          
+          if(!bits[1].startsWith("{")){
+            scope.put("_str", scope, val);
+            val = context.evaluateString(scope, "JSON.parse(_str)", "object", 1, null);
+          }
+//          scope.put("_str", scope, bits[0]);
+//          Object key = context.evaluateString(scope, "JSON.parse(_str)", "object", 1, null);
+//          scope.put("_str", scope, bits[1]);
+//          Object val = context.evaluateString(scope, "JSON.parse(_str)", "object", 1, null);
+          this.results.put(key, val);
         }
         return 0;
     }
