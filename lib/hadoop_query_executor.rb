@@ -19,7 +19,7 @@ class HadoopQueryExecutor
    def execute
     result= @executor.execute()
     
-    results = []
+    results = {}
     result.key_set.each do |k|
      key = parse_if_needed(k)
      val = parse_if_needed(result[k])
@@ -33,6 +33,6 @@ class HadoopQueryExecutor
    private 
    
    def parse_if_needed(x)
-     x[0] == '{' ? JSON.parse(x) : x
+     (x[0] == '{') ? JSON.parse(x) : x
    end
 end
